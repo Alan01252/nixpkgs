@@ -13,6 +13,8 @@
 , gnutar
 , atomEnv
 , libkrb5
+, libdrm
+, mesa
 }:
 
 # from justinwoo/azuredatastudio-nix
@@ -21,11 +23,11 @@
 stdenv.mkDerivation rec {
 
   pname = "azuredatastudio";
-  version = "1.17.1";
+  version = "1.28.0";
 
   src = fetchurl {
-    url = "https://azuredatastudiobuilds.blob.core.windows.net/releases/${version}/azuredatastudio-linux-${version}.tar.gz";
-    sha256 = "0px9n9vyjvyddca4x7d0zindd0dim7350vkjg5dd0506fm8dc38k";
+    url = "https://sqlopsbuilds.azureedge.net/stable/13e362762762e5cb76a5c8afd2bc650f48c2d3d8/azuredatastudio-linux-${version}.tar.gz";
+    sha256 = "0jnbkijfbb670gmqcndd2sv43b2xagcsl6plvf9d87mcixfyvyq3";
   };
 
   nativeBuildInputs = [
@@ -34,6 +36,7 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     libuuid
+    mesa
     at-spi2-core
     at-spi2-atk
   ];
@@ -53,14 +56,16 @@ stdenv.mkDerivation rec {
     stdenv.cc.cc
     libunwind
     libuuid
+    mesa
     icu
     openssl
     zlib
     curl
+    libdrm
   ];
 
   # this will most likely need to be updated when azuredatastudio's version changes
-  sqltoolsservicePath = "${targetPath}/resources/app/extensions/mssql/sqltoolsservice/Linux/2.0.0-release.56";
+  sqltoolsservicePath = "${targetPath}/resources/app/extensions/mssql/sqltoolsservice/Linux/3.0.0-release.89";
 
   rpath = lib.concatStringsSep ":" [
     atomEnv.libPath
@@ -71,6 +76,7 @@ stdenv.mkDerivation rec {
         at-spi2-atk
         stdenv.cc.cc.lib
         libkrb5
+        libdrm
       ]
     )
     targetPath
